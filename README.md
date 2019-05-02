@@ -2,6 +2,8 @@
 
 springboot microserver sample by generating with openapi-generator
 
+* see also [swagger-codegen sample](https://github.com/t2y/swagger-springboot-sample)
+
 ## How to build
 
 to generate source code with open-generator from [spec/openapi.yaml](spec/openapi.yaml)
