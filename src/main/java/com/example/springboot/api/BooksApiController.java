@@ -7,18 +7,18 @@ import javax.validation.Valid;
 
 import org.openapitools.api.BooksApi;
 import org.openapitools.model.Book;
+import org.openapitools.model.Format;
+import org.openapitools.model.Frequency;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import io.swagger.annotations.ApiOperation;
+import com.example.springboot.exception.MyBadRequestException;
+
 import io.swagger.annotations.ApiParam;
-import io.swagger.annotations.ApiResponse;
-import io.swagger.annotations.ApiResponses;
 import lombok.val;
 import lombok.extern.slf4j.Slf4j;
 
@@ -27,11 +27,6 @@ import lombok.extern.slf4j.Slf4j;
 public class BooksApiController implements BooksApi {
 
     @Override
-    @ApiOperation(value = "Create book", nickname = "createBook", notes = "This can only be done by the logged in user.", tags = {
-            "books", })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "successful operation") })
-    @RequestMapping(value = "/books/create", consumes = { "application/json" }, method = RequestMethod.POST)
     public ResponseEntity<Void> createBook(
             @ApiParam(value = "Created book object", required = true) @Valid @RequestBody Book book) {
         log.info("called createdBook: " + book.toString());
@@ -39,13 +34,6 @@ public class BooksApiController implements BooksApi {
     }
 
     @Override
-    @ApiOperation(value = "Get book by book id", nickname = "getBookById", notes = "", response = Book.class, tags = {
-            "books", })
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "successful operation", response = Book.class),
-            @ApiResponse(code = 400, message = "Invalid username supplied"),
-            @ApiResponse(code = 404, message = "User not found") })
-    @RequestMapping(value = "/books/{id}", produces = { "application/json" }, method = RequestMethod.GET)
     public ResponseEntity<Book> getBookById(
             @ApiParam(value = "The id that needs to be fetched. Use 1 for testing. ", required = true) @PathVariable("id") Integer id) {
         log.info("called getBookById: " + String.valueOf(id));
@@ -54,12 +42,19 @@ public class BooksApiController implements BooksApi {
     }
 
     @Override
-    @ApiOperation(value = "", nickname = "getBooks", notes = "Returns a list of books", response = Book.class, responseContainer = "List", tags = {})
-    @ApiResponses(value = {
-            @ApiResponse(code = 200, message = "Successfully returned a list of books", response = Book.class, responseContainer = "List") })
-    @RequestMapping(value = "/books/list", produces = { "application/json" }, method = RequestMethod.GET)
-    public ResponseEntity<List<Book>> getBooks() {
+    public ResponseEntity<List<Book>> getBooks(
+            @ApiParam(value = "", required = true, defaultValue = "null") @PathVariable("frequency") Frequency frequency,
+            @ApiParam(value = "") @Valid @RequestParam(value = "offset", required = false) Integer offset,
+            @ApiParam(value = "") @Valid @RequestParam(value = "limit", required = false) Integer limit,
+            @ApiParam(value = "", defaultValue = "null") @Valid @RequestParam(value = "format", required = false, defaultValue = "null") Format format) {
         log.info("called : getBooks");
+        log.info(frequency.toString());
+        if (format != null) {
+            log.info(format.toString());
+        }
+        if (frequency.toString() == "yearly") {
+            throw new MyBadRequestException("exception handling test");
+        }
         List<Book> books = Collections.emptyList();
         return new ResponseEntity<List<Book>>(books, HttpStatus.OK);
     }

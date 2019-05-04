@@ -16,6 +16,7 @@ tags:
   description: Operations about book
 - name: ping
   description: returns pong response without auth
+
 paths:
   /users/list:
     get:
@@ -134,10 +135,16 @@ paths:
         404:
           description: User not found
           content: {}
-  /books/list:
+
+  /books/{frequency}/list:
     get:
       description: Returns a list of books
       operationId: getBooks
+      parameters:
+      - $ref: '#/components/parameters/frequencyPath'
+      - $ref: '#/components/parameters/offsetParam'
+      - $ref: '#/components/parameters/limitParam'
+      - $ref: '#/components/parameters/formatParam'
       responses:
         '200':
           description: Successfully returned a list of books
@@ -147,6 +154,7 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/Book'
+
   /books/create:
     post:
       tags:
@@ -206,7 +214,47 @@ paths:
                   message:
                     type: string
 components:
+  parameters:
+    frequencyPath:
+      name: frequency
+      in: path
+      required: true
+      schema:
+        $ref: '#/components/schemas/frequency'
+    offsetParam:
+      name: offset
+      in: query
+      required: false
+      schema:
+        type: integer
+    limitParam:
+      name: limit
+      in: query
+      required: false
+      schema:
+        type: integer
+    formatParam:
+      name: format
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/format'
+
   schemas:
+    frequency:
+      type: string
+      description: time unit
+      enum: [daily, monthly, yearly, weekly]
+    format:
+      type: string
+      description: api response format
+      enum: [json, tsv]
+      default: json
+    GenericError:
+      type: object
+      properties:
+        message:
+          type: string
     User:
       type: object
       properties:

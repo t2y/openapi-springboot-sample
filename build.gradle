@@ -35,6 +35,8 @@ dependencies {
     compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.4.RELEASE'
 
     // openapi generator
+    //compile group: 'org.openapitools', name: 'jackson-databind-nullable', version: '0.1.0'
+    //swaggerCodegen 'org.openapitools:openapi-generator-cli:4.0.0-beta3'
     swaggerCodegen 'org.openapitools:openapi-generator-cli:3.3.4'
 
     implementation 'com.google.guava:guava:27.0.1-jre'

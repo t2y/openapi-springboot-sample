@@ -11,11 +11,7 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @SpringBootApplication
 @ComponentScan(basePackages = {
-        //"org.openapitools",
-        //"org.openapitools.api",
-        //"org.openapitools.configuration"
         "com.example.springboot",
-        "com.example.springboot.api",
 })
 public class ServerMain implements CommandLineRunner {
 
