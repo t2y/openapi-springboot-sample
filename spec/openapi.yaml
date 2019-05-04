@@ -21,6 +21,8 @@ paths:
   /users/list:
     get:
       description: Returns a list of users
+      parameters:
+      - $ref: '#/components/parameters/formatParam'
       operationId: getUsers
       responses:
         '200':
@@ -31,6 +33,9 @@ paths:
                 type: array
                 items:
                   $ref: '#/components/schemas/User'
+            text/tab-separated-values:
+              schema:
+                type: string
   /users/create:
     post:
       tags:

@@ -5,16 +5,20 @@ import java.util.List;
 import javax.validation.Valid;
 
 import org.openapitools.api.UsersApi;
+import org.openapitools.model.Format;
 import org.openapitools.model.InlineResponse201;
 import org.openapitools.model.User;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.example.springboot.configuration.ExtraMediaType;
 import com.example.springboot.service.UserService;
 
 import io.swagger.annotations.ApiParam;
@@ -29,12 +33,29 @@ public class UsersApiController implements UsersApi {
     @Autowired
     private UserService userService;
 
+    private HttpHeaders getHeaders(Format format) {
+        var headers = new HttpHeaders();
+        switch (format) {
+        case TSV:
+            headers.setContentDispositionFormData("attatchment", "test.tsv");
+            headers.setContentType(ExtraMediaType.TEXT_TSV);
+            break;
+        case JSON:
+            break;
+        default:
+            assert false;
+        }
+        return headers;
+    }
+
     @Override
-    public ResponseEntity<List<User>> getUsers() {
+    public ResponseEntity<List<User>> getUsers(
+            @ApiParam(value = "", defaultValue = "null") @Valid @RequestParam(value = "format", required = false, defaultValue = "null") Format format) {
         val auth = SecurityContextHolder.getContext().getAuthentication();
         log.info(auth.getAuthorities().toString());
         val users = this.userService.getUsers();
-        return new ResponseEntity<>(users, HttpStatus.OK);
+        val headers = this.getHeaders(format);
+        return new ResponseEntity<>(users, headers, HttpStatus.OK);
     }
 
     @Override
