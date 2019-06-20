@@ -42,6 +42,12 @@ paths:
             text/tab-separated-values:
               schema:
                 type: string
+                format: binary
+            text/csv:
+              schema:
+                type: string
+                format: binary
+
   /users/create:
     post:
       tags:
@@ -70,6 +76,7 @@ paths:
         '409':
           description: Conflict user ID
           content: {}
+
   /users/{id}:
     get:
       tags:
@@ -97,6 +104,7 @@ paths:
         404:
           description: User not found
           content: {}
+
     put:
       tags:
       - users
@@ -125,6 +133,7 @@ paths:
         404:
           description: User not found
           content: {}
+
     delete:
       tags:
       - user
@@ -184,6 +193,7 @@ paths:
         default:
           description: successful operation
           content: {}
+
   /books/{id}:
     get:
       tags:
@@ -210,6 +220,7 @@ paths:
         404:
           description: User not found
           content: {}
+
   /ping:
     get:
       description: Returns pong message
@@ -259,7 +270,7 @@ components:
     format:
       type: string
       description: api response format
-      enum: [json, tsv]
+      enum: [json, tsv, csv]
       default: json
     GenericError:
       type: object
