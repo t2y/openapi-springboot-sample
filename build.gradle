@@ -1,5 +1,5 @@
 plugins {
-    id "org.springframework.boot" version "2.1.4.RELEASE"
+    id "org.springframework.boot" version "2.1.5.RELEASE"
     id 'application'
     id 'java'
     id 'org.hidetake.swagger.generator' version '2.18.1'
@@ -30,14 +30,13 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 
     // spring boot with jetty
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty', version: '2.1.4.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.1.4.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.4.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty', version: '2.1.5.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.1.5.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.5.RELEASE'
 
     // openapi generator
-    //compile group: 'org.openapitools', name: 'jackson-databind-nullable', version: '0.1.0'
-    //swaggerCodegen 'org.openapitools:openapi-generator-cli:4.0.0-beta3'
-    swaggerCodegen 'org.openapitools:openapi-generator-cli:3.3.4'
+    compile group: 'org.openapitools', name: 'jackson-databind-nullable', version: '0.1.0'
+    swaggerCodegen 'org.openapitools:openapi-generator-cli:4.0.1'
 
     implementation 'com.google.guava:guava:27.0.1-jre'
     testImplementation 'junit:junit:4.12'

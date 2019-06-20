@@ -1,4 +1,5 @@
 openapi: 3.0.2
+
 info:
   title: Swagger Microserver Sample
   description: 'Sample code to learn openapi/swagger'
@@ -6,6 +7,7 @@ info:
     name: Apache 2.0
     url: http://www.apache.org/licenses/LICENSE-2.0.html
   version: 0.5.0
+
 tags:
 - name: users
   description: Operations about user
@@ -16,6 +18,10 @@ tags:
   description: Operations about book
 - name: ping
   description: returns pong response without auth
+
+servers:
+- url: http://localhost
+  description: Development
 
 paths:
   /users/list:
