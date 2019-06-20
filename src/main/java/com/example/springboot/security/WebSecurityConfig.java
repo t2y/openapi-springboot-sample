@@ -27,6 +27,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .addFilter(authorizationFilter())
             .authorizeRequests()
                 .mvcMatchers("/ping").permitAll()
+                .mvcMatchers("/stream/**").permitAll()
                 .mvcMatchers("/users/list").hasRole("ADMIN")
                 .mvcMatchers("/users/**").hasRole("USER")
                 .anyRequest().authenticated()

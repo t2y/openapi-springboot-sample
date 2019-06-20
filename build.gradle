@@ -36,7 +36,7 @@ dependencies {
 
     // openapi generator
     compile group: 'org.openapitools', name: 'jackson-databind-nullable', version: '0.1.0'
-    swaggerCodegen 'org.openapitools:openapi-generator-cli:4.0.1'
+    swaggerCodegen 'org.openapitools:openapi-generator-cli:4.0.2'
 
     implementation 'com.google.guava:guava:27.0.1-jre'
     testImplementation 'junit:junit:4.12'
@@ -47,6 +47,12 @@ swaggerSources {
         inputFile = file('spec/openapi.yaml')
         code {
             language = 'spring'
+            rawOptions = [
+                '--import-mappings=ByteStream=org.springframework.core.io.ByteArrayResource',
+                '--type-mappings=ByteStream=org.springframework.core.io.ByteArrayResource',
+                '--import-mappings=InputStream=org.springframework.core.io.InputStreamResource',
+                '--type-mappings=InputStream=org.springframework.core.io.InputStreamResource',
+            ]
             configFile = file('spec/config.json')
             // dependsOn validation
         }

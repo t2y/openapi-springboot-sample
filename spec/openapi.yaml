@@ -235,6 +235,41 @@ paths:
                 properties:
                   message:
                     type: string
+
+  /stream/byte:
+    get:
+      description: Returns streams
+      parameters:
+      - $ref: '#/components/parameters/streamFormatParam'
+      operationId: getByte
+      responses:
+        '200':
+          description: streams
+          content:
+            text/tab-separated-values:
+              schema:
+                $ref: '#/components/schemas/ByteStream'
+            text/csv:
+              schema:
+                $ref: '#/components/schemas/ByteStream'
+
+  /stream/input:
+    get:
+      description: Returns streams
+      parameters:
+      - $ref: '#/components/parameters/streamFormatParam'
+      operationId: getInput
+      responses:
+        '200':
+          description: streams
+          content:
+            text/tab-separated-values:
+              schema:
+                $ref: '#/components/schemas/InputStream'
+            text/csv:
+              schema:
+                $ref: '#/components/schemas/InputStream'
+
 components:
   parameters:
     frequencyPath:
@@ -261,6 +296,12 @@ components:
       required: false
       schema:
         $ref: '#/components/schemas/format'
+    streamFormatParam:
+      name: format
+      in: query
+      required: false
+      schema:
+        $ref: '#/components/schemas/streamFormat'
 
   schemas:
     frequency:
@@ -272,10 +313,25 @@ components:
       description: api response format
       enum: [json, tsv, csv]
       default: json
+    streamFormat:
+      type: string
+      description: api response format
+      enum: [tsv, csv]
+      default: csv
     GenericError:
       type: object
       properties:
         message:
+          type: string
+    ByteStream:
+      type: object
+      properties:
+        id:
+          type: string
+    InputStream:
+      type: object
+      properties:
+        id:
           type: string
     User:
       type: object
