@@ -1,6 +1,7 @@
 package com.example.springboot.api;
 
-import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.validation.Valid;
 
@@ -49,11 +50,51 @@ public class StreamApiController implements StreamApi {
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
+    class MyData extends InputStream {
+
+        private static final int MAX_LOOP = 50000;
+
+        private final byte[] DATA = "test,data\n".getBytes();
+        private int index = 0;
+
+        @Override
+        public int read() throws IOException {
+            log.info("read with no parameter called");
+            return -1;
+        }
+
+        @Override
+        public int read(byte[] data, int offset, int length) throws IOException {
+            val message = String.format("read with 3 parameters, offset: %d, length: %d", offset, length);
+            log.info(message);
+            if (this.index > MAX_LOOP) {
+                return -1;
+            }
+            int i = 0;
+            while (i < length) {
+                System.arraycopy(this.DATA, 0, data, offset, length);
+                i += this.DATA.length;
+            }
+            this.index++;
+            return data.length;
+        }
+
+        @Override
+        public int read(byte[] data) throws IOException {
+            log.info("read with buffered data");
+            if (this.index > MAX_LOOP) {
+                return -1;
+            }
+            System.arraycopy(this.DATA, 0, data, 0, this.DATA.length);
+            this.index++;
+            return this.DATA.length;
+        }
+    }
+
     public ResponseEntity<InputStreamResource> getInput(
             @ApiParam(value = "", allowableValues = "tsv, csv", defaultValue = "csv") @Valid StreamFormat format) {
         log.info("getInput");
-        val byteInputStream = new ByteArrayInputStream("test,data\n".getBytes());
-        val resource = new InputStreamResource(byteInputStream);
+        val resource = new InputStreamResource(new MyData());
         val headers = this.getHeader(format);
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
