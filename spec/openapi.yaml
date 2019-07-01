@@ -269,6 +269,9 @@ paths:
             text/csv:
               schema:
                 $ref: '#/components/schemas/InputStream'
+            application/zip:
+              schema:
+                $ref: '#/components/schemas/InputStream'
 
 components:
   parameters:
@@ -316,7 +319,7 @@ components:
     streamFormat:
       type: string
       description: api response format
-      enum: [tsv, csv]
+      enum: [tsv, csv, zip]
       default: csv
     GenericError:
       type: object

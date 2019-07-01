@@ -1,7 +1,11 @@
 package com.example.springboot.api;
 
+import java.io.BufferedOutputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 import javax.validation.Valid;
 
@@ -36,6 +40,10 @@ public class StreamApiController implements StreamApi {
             headers.setContentDispositionFormData("attatchment", "test.csv");
             headers.setContentType(ExtraMediaType.TEXT_CSV);
             break;
+        case ZIP:
+            headers.setContentDispositionFormData("attatchment", "test.zip");
+            headers.setContentType(ExtraMediaType.APPLICATION_ZIP);
+            break;
         default:
             throw new IllegalStateException();
         }
@@ -55,7 +63,25 @@ public class StreamApiController implements StreamApi {
         private static final int MAX_LOOP = 50000;
 
         private final byte[] DATA = "test,data\n".getBytes();
+        private final StreamFormat format;
         private int index = 0;
+
+        private ByteArrayOutputStream byteArrayOutputStream = null;
+        private ZipOutputStream zipOutputStream = null;
+
+        public MyData(StreamFormat format) {
+            this.format = format;
+            if (this.format == StreamFormat.ZIP) {
+                this.byteArrayOutputStream = new ByteArrayOutputStream();
+                val bufferedOutputStream = new BufferedOutputStream(byteArrayOutputStream);
+                this.zipOutputStream = new ZipOutputStream(bufferedOutputStream);
+                try {
+                    this.zipOutputStream.putNextEntry(new ZipEntry("text.data"));
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
 
         @Override
         public int read() throws IOException {
@@ -85,16 +111,34 @@ public class StreamApiController implements StreamApi {
             if (this.index > MAX_LOOP) {
                 return -1;
             }
-            System.arraycopy(this.DATA, 0, data, 0, this.DATA.length);
-            this.index++;
-            return this.DATA.length;
+
+            switch (this.format) {
+            case CSV:
+            case TSV:
+                System.arraycopy(this.DATA, 0, data, 0, this.DATA.length);
+                this.index++;
+                return this.DATA.length;
+            case ZIP:
+                this.zipOutputStream.write(this.DATA);
+                this.zipOutputStream.flush();
+                this.index++;
+                if (this.index > MAX_LOOP) {
+                    this.zipOutputStream.closeEntry();
+                    this.zipOutputStream.close();
+                }
+                val out = this.byteArrayOutputStream.toByteArray();
+                System.arraycopy(out, 0, data, 0, out.length);
+                return out.length;
+            default:
+                throw new UnsupportedOperationException();
+            }
         }
     }
 
     public ResponseEntity<InputStreamResource> getInput(
-            @ApiParam(value = "", allowableValues = "tsv, csv", defaultValue = "csv") @Valid StreamFormat format) {
+            @ApiParam(value = "", allowableValues = "tsv, csv, zip", defaultValue = "csv") @Valid StreamFormat format) {
         log.info("getInput");
-        val resource = new InputStreamResource(new MyData());
+        val resource = new InputStreamResource(new MyData(format));
         val headers = this.getHeader(format);
         return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
