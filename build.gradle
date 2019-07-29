@@ -1,8 +1,18 @@
+buildscript {
+    repositories {
+        mavenLocal()
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.openapitools:openapi-generator-gradle-plugin:4.0.3'
+    }
+}
+
 plugins {
-    id "org.springframework.boot" version "2.1.5.RELEASE"
     id 'application'
     id 'java'
-    id 'org.hidetake.swagger.generator' version '2.18.1'
+    id 'org.openapi.generator' version '4.0.3'
+    id 'org.springframework.boot' version '2.1.6.RELEASE'
 }
 
 repositories {
@@ -13,12 +23,49 @@ configurations {
     compile.exclude module: 'spring-boot-starter-tomcat'
 }
 
+openApiMeta {
+    generatorName = 'Sample'
+    packageName = 'org.openapitools'
+    outputFolder = "${buildDir}/meta"
+}
+
+openApiValidate {
+    inputSpec = "${rootDir}/spec/openapi.yaml"
+}
+
+// Builds a spring client by default.
+openApiGenerate {
+    generatorName = 'spring'
+    inputSpec = "${rootDir}/spec/openapi.yaml"
+    outputDir = "${buildDir}/generated"
+    apiPackage = 'org.openapitools.api'
+    invokerPackage = 'org.openapitools.invoker'
+    modelPackage = 'org.openapitools.model'
+    configOptions = [
+            dateLibrary: 'java8'
+    ]
+    systemProperties = [
+            modelDocs: 'false'
+    ]
+    typeMappings = [
+        ByteStream: 'org.springframework.core.io.ByteArrayResource',
+        InputStream: 'org.springframework.core.io.InputStreamResource',
+    ]
+    importMappings = [
+        ByteStream: 'org.springframework.core.io.ByteArrayResource',
+        InputStream: 'org.springframework.core.io.InputStreamResource',
+    ]
+    skipValidateSpec = true
+    logToStderr = true
+    generateAliasAsModel = false
+}
+
 dependencies {
     // for type inference
-    annotationProcessor 'org.projectlombok:lombok:1.18.6'
-    compileOnly 'org.projectlombok:lombok:1.18.6'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.6'
-    testCompileOnly 'org.projectlombok:lombok:1.18.6'
+    annotationProcessor 'org.projectlombok:lombok:1.18.8'
+    compileOnly 'org.projectlombok:lombok:1.18.8'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.8'
+    testCompileOnly 'org.projectlombok:lombok:1.18.8'
 
     // for logging
     compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.2.3'
@@ -30,38 +77,20 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 
     // spring boot with jetty
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty', version: '2.1.5.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.1.5.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.5.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty', version: '2.1.6.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.1.6.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.6.RELEASE'
 
     // openapi generator
     compile group: 'org.openapitools', name: 'jackson-databind-nullable', version: '0.1.0'
-    swaggerCodegen 'org.openapitools:openapi-generator-cli:4.0.2'
 
     implementation 'com.google.guava:guava:27.0.1-jre'
     testImplementation 'junit:junit:4.12'
 }
 
-swaggerSources {
-    openapi {
-        inputFile = file('spec/openapi.yaml')
-        code {
-            language = 'spring'
-            rawOptions = [
-                '--import-mappings=ByteStream=org.springframework.core.io.ByteArrayResource',
-                '--type-mappings=ByteStream=org.springframework.core.io.ByteArrayResource',
-                '--import-mappings=InputStream=org.springframework.core.io.InputStreamResource',
-                '--type-mappings=InputStream=org.springframework.core.io.InputStreamResource',
-            ]
-            configFile = file('spec/config.json')
-            // dependsOn validation
-        }
-    }
-}
-
-compileJava.dependsOn swaggerSources.openapi.code
-sourceSets.main.java.srcDir "${swaggerSources.openapi.code.outputDir}/src/main/java"
-sourceSets.main.resources.srcDir "${swaggerSources.openapi.code.outputDir}/src/main/resources"
+compileJava.dependsOn tasks.openApiValidate, tasks.openApiGenerate
+sourceSets.main.java.srcDir "${openApiGenerate.outputDir.get()}/src/main/java"
+sourceSets.main.resources.srcDir "${openApiGenerate.outputDir.get()}/src/main/resources"
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8

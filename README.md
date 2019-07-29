@@ -9,20 +9,20 @@ springboot microserver sample by generating with openapi-generator
 to generate source code with open-generator from [spec/openapi.yaml](spec/openapi.yaml)
 
 ```bash
-$ gradle generateSwaggerCode
+$ gradle clean openApiGenerate
 ```
 
-to show help related to generateSwaggerCode
+to show help related to openApiGenerate
 
 ```bash
-$ gradle generateSwaggerCodeOpenapiHelp
+$ gradle openApiGenerators
 ```
 
-generated code is in `build/swagger-code-openapi`
+generated code is in `build/generated`
 
 ```bash
-$ tree build/swagger-code-openapi/
-build/swagger-code-openapi/
+$ tree build/generated/
+build/generated/
 ├── README.md
 ├── pom.xml
 └── src
@@ -30,8 +30,6 @@ build/swagger-code-openapi/
         ├── java
         │   └── org
         │       └── openapitools
-        │           ├── OpenAPI2SpringBoot.java
-        │           ├── RFC3339DateFormat.java
         │           ├── api
         │           │   ├── ApiUtil.java
         │           │   ├── BooksApi.java
@@ -45,6 +43,9 @@ build/swagger-code-openapi/
         │           ├── configuration
         │           │   ├── HomeController.java
         │           │   └── OpenAPIDocumentationConfig.java
+        │           ├── invoker
+        │           │   ├── OpenAPI2SpringBoot.java
+        │           │   └── RFC3339DateFormat.java
         │           └── model
         │               ├── Book.java
         │               ├── Format.java
@@ -57,7 +58,7 @@ build/swagger-code-openapi/
         └── resources
             └── application.properties
 
-9 directories, 24 files
+10 directories, 24 files
 ```
 
 ## How to boot
@@ -159,7 +160,7 @@ $ curl -s -v "localhost:8080/stream/input?format=csv"
 ## References
 
 * https://swagger.io/specification/
-* https://github.com/int128/gradle-swagger-generator-plugin
 * https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators/spring.md
+* https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/README.adoc
 * https://speakerdeck.com/akihito_nakano/gunmaweb34
 * https://openapi-generator.tech/docs/usage
