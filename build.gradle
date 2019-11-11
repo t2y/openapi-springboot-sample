@@ -4,15 +4,15 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.openapitools:openapi-generator-gradle-plugin:4.0.3'
+        classpath 'org.openapitools:openapi-generator-gradle-plugin:4.2.0'
     }
 }
 
 plugins {
     id 'application'
     id 'java'
-    id 'org.openapi.generator' version '4.0.3'
-    id 'org.springframework.boot' version '2.1.6.RELEASE'
+    id 'org.openapi.generator' version '4.2.0'
+    id 'org.springframework.boot' version '2.2.1.RELEASE'
 }
 
 repositories {
@@ -77,9 +77,9 @@ dependencies {
     compile group: 'io.springfox', name: 'springfox-swagger2', version: '2.9.2'
 
     // spring boot with jetty
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty', version: '2.1.6.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.1.6.RELEASE'
-    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.1.6.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-jetty', version: '2.2.1.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-security', version: '2.2.1.RELEASE'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-web', version: '2.2.1.RELEASE'
 
     // openapi generator
     compile group: 'org.openapitools', name: 'jackson-databind-nullable', version: '0.1.0'
