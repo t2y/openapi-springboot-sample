@@ -159,7 +159,7 @@ $ curl -s -v "localhost:8080/stream/input?format=csv"
 
 ## References
 
-* https://swagger.io/specification/
+* https://github.com/OAI/OpenAPI-Specification
 * https://github.com/OpenAPITools/openapi-generator/blob/master/docs/generators/spring.md
 * https://github.com/OpenAPITools/openapi-generator/blob/master/modules/openapi-generator-gradle-plugin/README.adoc
 * https://speakerdeck.com/akihito_nakano/gunmaweb34
