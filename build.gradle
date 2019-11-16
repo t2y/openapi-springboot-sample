@@ -4,14 +4,14 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath 'org.openapitools:openapi-generator-gradle-plugin:4.2.0'
+        classpath 'org.openapitools:openapi-generator-gradle-plugin:4.2.1'
     }
 }
 
 plugins {
     id 'application'
     id 'java'
-    id 'org.openapi.generator' version '4.2.0'
+    id 'org.openapi.generator' version '4.2.1'
     id 'org.springframework.boot' version '2.2.1.RELEASE'
 }
 
@@ -36,16 +36,17 @@ openApiValidate {
 // Builds a spring client by default.
 openApiGenerate {
     generatorName = 'spring'
+    configFile = 'spec/config.json'
     inputSpec = "${rootDir}/spec/openapi.yaml"
     outputDir = "${buildDir}/generated"
     apiPackage = 'org.openapitools.api'
     invokerPackage = 'org.openapitools.invoker'
     modelPackage = 'org.openapitools.model'
     configOptions = [
-            dateLibrary: 'java8'
+        dateLibrary: 'java8'
     ]
     systemProperties = [
-            modelDocs: 'false'
+        modelDocs: 'false'
     ]
     typeMappings = [
         ByteStream: 'org.springframework.core.io.ByteArrayResource',
